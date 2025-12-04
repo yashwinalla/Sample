@@ -39,7 +39,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: zap-fullscan-report
-          path: report_html.html
+          path: ./zap-full-scan-report.html
 
       # ============================
       # 🛡️ UPLOAD TO GITHUB SECURITY
