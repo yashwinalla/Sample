@@ -1,0 +1,21 @@
+permissions: write-all
+name: ZAP Full Scan
+
+on:
+  workflow_dispatch:
+
+jobs:
+  zap_full_scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: ZAP Full Scan
+        uses: zaproxy/action-full-scan@v0.9.0
+        with:
+          target: "https://testfire.net/login.jsp"
+          cmd_options: "-a"
+      
+      - name: Upload ZAP Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: zap-full-scan-report
+          path: report.html
