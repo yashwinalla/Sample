@@ -1,4 +1,4 @@
-name: OWASP ZAP DAST Complete Security Pipeline
+name: OWASP ZAP Full Active DAST Scan
 
 on:
   workflow_dispatch:
@@ -9,52 +9,23 @@ on:
 permissions:
   contents: write
   security-events: write
-  pull-requests: write
- 
-
-env:
-  TARGET_URL: "https://testfire.net/login.jsp"
-  API_SPEC: "https://petstore.swagger.io/v2/swagger.json"
 
 jobs:
-  zap-security:
+  zap-full-scan:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      # =============================
-      # 🔐 AUTHENTICATED LOGIN (OPTIONAL)
-      # =============================
-      - name: ZAP Authenticated Baseline Scan
-        uses: zaproxy/action-baseline@v0.9.0
-        with:
-          target: ${{ env.TARGET_URL }}
-          fail_on_alert: true
-          allow_issue_writing: true
-          cmd_options: >
-            -a
-            -z "auth.loginurl=${{ secrets.ZAP_LOGIN_URL }}
-                auth.username=${{ secrets.ZAP_USERNAME }}
-                auth.password=${{ secrets.ZAP_PASSWORD }}"
-
-      # Save baseline report
-      - name: Upload Baseline Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: zap-baseline-report
-          path: report_html.html
-
-      # =============================
-      # ⚡ FULL ACTIVE ATTACK SCAN
-      # =============================
-      - name: ZAP Full Scan (Active DAST)
+      # ============================
+      # ⚡ FULL ACTIVE SCAN
+      # ============================
+      - name: OWASP ZAP Full Scan
+        id: zap
         uses: zaproxy/action-full-scan@v0.9.0
         with:
-          target: ${{ env.TARGET_URL }}
+          target: "https://testfire.net/login.jsp"
           fail_on_alert: true
           allow_issue_writing: true
           cmd_options: >
@@ -63,33 +34,19 @@ jobs:
                 auth.username=${{ secrets.ZAP_USERNAME }}
                 auth.password=${{ secrets.ZAP_PASSWORD }}"
 
-      - name: Upload Full Scan Report
+      # ============================
+      # 📄 UPLOAD REPORT
+      # ============================
+      - name: Upload ZAP Full Scan Report
         uses: actions/upload-artifact@v4
         with:
           name: zap-fullscan-report
           path: report_html.html
 
-      # =============================
-      # 📘 API SECURITY SCAN (OpenAPI / Swagger)
-      # =============================
-      - name: ZAP API Scan
-        uses: zaproxy/action-api-scan@v0.9.0
-        with:
-          target: ${{ env.API_SPEC }}
-          fail_on_alert: true
-          allow_issue_writing: true
-
-      - name: Upload API Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: zap-api-report
-          path: report_html.html
-
-      # =============================
-      # 📊 UPLOAD SARIF FOR GitHub Security
-      # =============================
-      - name: Upload SARIF to GitHub Security
+      # ============================
+      # 🛡️ UPLOAD TO GITHUB SECURITY
+      # ============================
+      - name: Upload SARIF Results to GitHub Security
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: zap_scan.sarif
-
