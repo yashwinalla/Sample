@@ -39,7 +39,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: zap-fullscan-report
-          path: ./zap-full-scan-report.html
+          path: zap-full-scan-report.html
 
       # ============================
       # 🛡️ UPLOAD TO GITHUB SECURITY
@@ -47,4 +47,4 @@ jobs:
       - name: Upload SARIF Results to GitHub Security
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: zap_scan.sarif
+          sarif_file: zap-full-scan-report.sarif
