@@ -9,6 +9,8 @@ on:
 permissions:
   contents: write
   security-events: write
+  pull-requests: write
+ 
 
 env:
   TARGET_URL: "https://testfire.net/login.jsp"
