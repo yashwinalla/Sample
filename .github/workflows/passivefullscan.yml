@@ -35,11 +35,11 @@ jobs:
       # ============================
       # 📄 UPLOAD REPORT
       # ============================
-      - name: Upload ZAP Full Scan Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: zap-fullscan-report
-          path: zap-full-scan-report.html
+      #- name: Upload ZAP Full Scan Report
+       # uses: actions/upload-artifact@v4
+        #with:
+         # name: zap-fullscan-report
+          #path: zap-full-scan-report.html
 
       # ============================
       # 🛡️ UPLOAD TO GITHUB SECURITY
